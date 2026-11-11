@@ -124,6 +124,9 @@
       <DependentUpon>DanhMuc.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="DanhMuc.aspx.designer.cs">
+      <DependentUpon>DanhMuc.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -141,6 +144,9 @@
     <Compile Include="KhachHang.aspx.cs">
       <DependentUpon>KhachHang.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="KhachHang.aspx.designer.cs">
+      <DependentUpon>KhachHang.aspx</DependentUpon>
     </Compile>
     <Compile Include="KhuyenMai.aspx.cs">
       <DependentUpon>KhuyenMai.aspx</DependentUpon>
@@ -169,6 +175,9 @@
       <DependentUpon>NhaCungCap.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="NhaCungCap.aspx.designer.cs">
+      <DependentUpon>NhaCungCap.aspx</DependentUpon>
+    </Compile>
     <Compile Include="NhanVien.aspx.cs">
       <DependentUpon>NhanVien.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -181,6 +190,9 @@
     <Compile Include="SanPham.aspx.cs">
       <DependentUpon>SanPham.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SanPham.aspx.designer.cs">
+      <DependentUpon>SanPham.aspx</DependentUpon>
     </Compile>
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
