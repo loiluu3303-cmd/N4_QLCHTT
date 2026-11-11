@@ -1,0 +1,87 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="QLCHTT_WebForms_Frontend.SiteMaster" %>
+<!DOCTYPE html>
+<html lang="vi">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><asp:ContentPlaceHolder ID="TitleContent" runat="server">Quản lý cửa hàng thời trang</asp:ContentPlaceHolder></title>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="Content/Site.css" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+</head>
+<body>
+<form id="form1" runat="server">
+<div class="app-shell">
+    <aside class="sidebar">
+        <a class="brand" href="Default.aspx">
+            <span class="brand-mark">F</span>
+            <span>FASHION<span class="brand-sub">ADMIN PANEL</span></span>
+        </a>
+        <div class="nav-caption">MENU CHÍNH</div>
+        <nav class="sidebar-nav">
+            <a class="nav-link" href="Default.aspx"><span class="nav-icon">▦</span>Tổng quan</a>
+
+            <div class="nav-group">
+                <button type="button" class="nav-group-title"><span>QUẢN LÝ BÁN HÀNG</span><span class="nav-caret">⌄</span></button>
+                <div class="nav-dropdown">
+                    <a class="nav-link" href="TaoHoaDon.aspx">Tạo hóa đơn</a>
+                    <a class="nav-link" href="DonHang.aspx">Quản lý hóa đơn</a>
+                    <a class="nav-link" href="DoiTraHang.aspx">Đổi trả hàng</a>
+                </div>
+            </div>
+
+            <div class="nav-group">
+                <button type="button" class="nav-group-title"><span>QUẢN LÝ SẢN PHẨM</span><span class="nav-caret">⌄</span></button>
+                <div class="nav-dropdown">
+                    <a class="nav-link" href="SanPham.aspx">Danh sách sản phẩm</a>
+                    <a class="nav-link" href="DanhMuc.aspx">Danh mục sản phẩm</a>
+                </div>
+            </div>
+
+            <div class="nav-group">
+                <button type="button" class="nav-group-title"><span>QUẢN LÝ KHO</span><span class="nav-caret">⌄</span></button>
+                <div class="nav-dropdown">
+                    <a class="nav-link" href="NhapHang.aspx">Nhập hàng</a>
+                    <a class="nav-link" href="TonKho.aspx">Tồn kho</a>
+                    <a class="nav-link" href="KiemKe.aspx">Kiểm kê kho</a>
+                </div>
+            </div>
+
+            <div class="nav-group">
+                <button type="button" class="nav-group-title"><span>QUẢN LÝ ĐỐI TÁC</span><span class="nav-caret">⌄</span></button>
+                <div class="nav-dropdown">
+                    <a class="nav-link" href="KhachHang.aspx">Khách hàng</a>
+                    <a class="nav-link" href="NhaCungCap.aspx">Nhà cung cấp</a>
+                </div>
+            </div>
+
+            <div class="nav-group">
+                <button type="button" class="nav-group-title"><span>QUẢN LÝ HỆ THỐNG</span><span class="nav-caret">⌄</span></button>
+                <div class="nav-dropdown">
+                    <a class="nav-link" href="KhuyenMai.aspx">Khuyến mãi</a>
+                    <a class="nav-link" href="NhanVien.aspx">Nhân viên</a>
+                    <a class="nav-link" href="TaiKhoan.aspx">Tài khoản &amp; phân quyền</a>
+                    <a class="nav-link" href="BaoCao.aspx">Báo cáo thống kê</a>
+                    <a class="nav-link" href="CaiDat.aspx">Cài đặt hệ thống</a>
+                </div>
+            </div>
+        </nav>
+        <div class="sidebar-bottom">
+            <div class="admin-avatar">A</div>
+            <div class="admin-info"><strong><asp:Label ID="lblTenNguoiDung" runat="server" Text="Tài khoản" /></strong><small><asp:Label ID="lblQuyenNguoiDung" runat="server" Text="Người dùng" /></small><a class="logout-link" href="Logout.aspx">Đăng xuất</a></div>
+        </div>
+    </aside>
+    <main class="main-area">
+        <header class="topbar">
+            <div class="topbar-left"><span class="topbar-title">Hệ thống quản lý cửa hàng thời trang</span><span class="status-dot"></span><span class="status-text">Giao diện Front-end</span></div>
+            <div class="topbar-user">Xin chào, <strong><asp:Label ID="lblTopbarUser" runat="server" Text="Người dùng" /></strong></div>
+        </header>
+        <section class="page-content"><asp:ContentPlaceHolder ID="MainContent" runat="server" /></section>
+        <footer class="footer">© 2026 - Hệ thống quản lý cửa hàng thời trang</footer>
+    </main>
+</div>
+</form>
+<script src="Scripts/bootstrap.bundle.min.js"></script>
+<script src="Scripts/Site.js"></script>
+</body>
+</html>

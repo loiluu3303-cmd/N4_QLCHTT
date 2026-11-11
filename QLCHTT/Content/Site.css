@@ -1,0 +1,96 @@
+:root{--sidebar:#168454;--sidebar-dark:#116b43;--ink:#263238;--muted:#7c8792;--line:#e9edf1;--surface:#fff;--page:#f5f7f9}
+*{box-sizing:border-box}body{margin:0;background:var(--page);color:var(--ink);font-family:Inter,"Segoe UI",Arial,sans-serif;font-size:14px}
+.app-shell{display:flex;min-height:100vh}.sidebar{width:245px;min-width:245px;background:var(--sidebar);color:#fff;padding:22px 14px 16px;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:11px;color:#fff;text-decoration:none;font-weight:800;font-size:16px;letter-spacing:.4px;padding:0 8px 23px;border-bottom:1px solid rgba(255,255,255,.3)}
+.brand-mark{width:36px;height:36px;border-radius:10px;background:#fff;color:var(--sidebar);display:grid;place-items:center;font-size:21px;font-weight:900}.brand-sub{display:block;font-size:9px;letter-spacing:1.7px;font-weight:500;opacity:.75;margin-top:2px}
+.nav-caption{font-size:10px;letter-spacing:1.5px;color:rgba(255,255,255,.65);font-weight:700;margin:25px 10px 10px}.sidebar .nav-link{color:rgba(255,255,255,.9);padding:12px 13px;border-radius:7px;margin:3px 0;font-weight:500;display:flex;align-items:center;gap:12px}.sidebar .nav-link:hover,.sidebar .nav-link:focus{background:rgba(255,255,255,.13);color:#fff}.sidebar .nav-link.active{background:#1769e8;color:#fff}.nav-icon{width:19px;text-align:center;font-size:17px}
+.sidebar-bottom{margin-top:auto;border-top:1px solid rgba(255,255,255,.3);padding:17px 5px 0;display:flex;align-items:center;gap:10px}.admin-avatar{width:34px;height:34px;border-radius:50%;background:#d8f3e6;color:#14784d;display:grid;place-items:center;font-weight:800}.sidebar-bottom strong{display:block;font-size:12px}.sidebar-bottom small{font-size:10px;opacity:.7}
+.main-area{min-width:0;flex:1;display:flex;flex-direction:column}.topbar{height:66px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px}.topbar-title{font-weight:700;color:#3b4650}.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#20b26b;margin:0 7px 1px 17px}.status-text{color:#84909a;font-size:12px}.topbar-user{font-size:12px;color:#7c8792}.topbar-user strong{color:#34404a}
+.page-content{padding:28px;flex:1}.footer{border-top:1px solid var(--line);background:#fff;text-align:center;padding:14px;color:#87919a;font-size:11px}
+.page-heading{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:23px}.page-heading h1{font-size:23px;font-weight:750;margin:0 0 6px}.page-heading p{margin:0;color:var(--muted);font-size:13px}.date-chip{border:1px solid var(--line);background:#fff;border-radius:7px;padding:8px 12px;color:#66727d;font-size:12px}
+.stat-card,.panel-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 2px 8px rgba(25,45,65,.025)}.stat-card{position:relative;padding:19px;min-height:132px;overflow:hidden}.stat-label{color:#7d8993;font-size:12px;font-weight:600}.stat-value{font-size:27px;font-weight:800;margin:10px 0 2px}.stat-note{font-size:11px;color:#98a2aa}.stat-icon{position:absolute;right:18px;top:19px;width:39px;height:39px;border-radius:10px;display:grid;place-items:center;font-size:21px}.purple{background:#f0eaff;color:#8662d7}.blue{background:#e8f2ff;color:#3983d9}.orange{background:#fff0e3;color:#e99a4c}.green{background:#e5f7ee;color:#24a36a}
+.panel-card{padding:20px}.panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.panel-header h5,.panel-card h5{font-size:15px;font-weight:750;margin:0 0 4px}.panel-header p{font-size:11px;color:#98a2aa;margin:0}.admin-table{font-size:12px;margin-bottom:0}.admin-table thead th{color:#7e8992;font-weight:650;background:#fafbfc;border-bottom:1px solid var(--line);white-space:nowrap}.admin-table td{color:#4d5963;border-bottom-color:#f0f2f4;white-space:nowrap}.admin-table tbody tr:last-child td{border-bottom:0}
+.status-badge{display:inline-block;padding:5px 9px;border-radius:20px;font-size:10px;font-weight:650}.status-badge.success{background:#e7f7ee;color:#18834f}.status-badge.warning{background:#fff4df;color:#b77b16}.inventory-row{display:flex;justify-content:space-between;font-size:12px;margin:16px 0 8px}.inventory-row span{color:#697680}.progress{height:6px;background:#eef1f3}.toolbar{display:flex;gap:9px;align-items:center;margin-bottom:17px}.search-box{max-width:340px}.filter-box{max-width:190px}.table-foot{border-top:1px solid var(--line);padding-top:13px;margin-top:10px;color:#929ca4;font-size:11px}.form-label{font-size:12px;font-weight:650;color:#59656f}.form-control,.form-select{font-size:13px;padding:9px 11px;border-color:#e1e6ea}.nav-tabs .nav-link{font-size:12px;color:#6e7a84}.nav-tabs .nav-link.active{color:#168454;font-weight:700}
+@media(max-width:800px){.sidebar{width:205px;min-width:205px}.page-content{padding:18px}.topbar{padding:0 18px}.topbar-user{display:none}}
+@media(max-width:600px){.app-shell{display:block}.sidebar{width:100%;min-width:0;padding:12px}.brand{padding-bottom:12px}.nav-caption,.sidebar-bottom{display:none}.sidebar .nav{display:grid;grid-template-columns:repeat(2,1fr);gap:3px}.sidebar .nav-link{font-size:12px;margin:0;padding:9px}.topbar{height:auto;padding:13px 15px}.status-text{display:none}.page-content{padding:15px}.page-heading{align-items:flex-start}.toolbar{flex-wrap:wrap}.search-box,.filter-box{max-width:none;flex:1 1 100%}}
+
+/* Sidebar menu đầy đủ, chia nhóm bằng tiêu đề tĩnh */
+.sidebar{overflow-y:auto;max-height:100vh}
+.sidebar-nav{padding-bottom:16px}
+.nav-section-title{font-size:9px;letter-spacing:1.15px;font-weight:800;color:rgba(255,255,255,.62);padding:17px 10px 6px}
+.sidebar .nav-link{font-size:12px;padding:10px 11px;margin:2px 0;min-height:37px}
+.sidebar .nav-link:hover,.sidebar .nav-link.active{background:rgba(255,255,255,.16);color:#fff}
+.sidebar .nav-link.active{background:#1769e8}
+.sidebar .nav-icon{display:inline-block;width:20px;text-align:center;margin-right:7px;font-size:15px}
+@media(max-width:600px){.sidebar{max-height:none}.sidebar-nav{max-height:58vh;overflow-y:auto}}
+
+.invoice-line{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);font-size:13px;color:#697680}
+.invoice-total{display:flex;justify-content:space-between;padding:17px 0 5px;font-size:14px;font-weight:750}
+.invoice-total strong{color:#168454;font-size:19px}
+.empty-state{border:1px dashed #dce3e8;border-radius:8px;padding:28px;text-align:center;color:#97a1a9;font-size:12px;background:#fbfcfd}
+
+/* Menu cấp 2: rê chuột lên nhóm để xổ danh sách chức năng */
+.sidebar{overflow-y:auto;max-height:100vh}
+.sidebar-nav{padding-bottom:18px}
+.nav-group{position:relative;margin:5px 0}
+.nav-group-title{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 10px;border:0;border-radius:7px;background:transparent;color:rgba(255,255,255,.78);text-align:left;font-size:10px;font-weight:800;letter-spacing:1.05px;cursor:pointer}
+.nav-group-title:hover,.nav-group:focus-within .nav-group-title{background:rgba(255,255,255,.12);color:#fff}
+.nav-caret{font-size:15px;line-height:1;transition:transform .18s ease}
+.nav-dropdown{display:none;margin:2px 0 5px 10px;padding:4px 0 4px 9px;border-left:1px solid rgba(255,255,255,.32)}
+.nav-group:hover>.nav-dropdown,.nav-group:focus-within>.nav-dropdown{display:block}
+.nav-group:hover>.nav-group-title .nav-caret,.nav-group:focus-within>.nav-group-title .nav-caret{transform:rotate(180deg)}
+.sidebar .nav-link{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:2px 0;border-radius:6px;color:rgba(255,255,255,.9);font-size:12px}
+.sidebar .nav-link:hover,.sidebar .nav-link.active{background:#1769e8;color:#fff}
+.nav-group-title:focus-visible,.sidebar .nav-link:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media(hover:none){.nav-group:focus-within>.nav-dropdown{display:block}}
+@media(max-width:600px){.sidebar{max-height:none}.sidebar-nav{max-height:60vh;overflow-y:auto}}
+
+.nav-group.has-active>.nav-group-title{color:#fff;background:rgba(255,255,255,.10)}
+
+/* Combo-box style hover dropdown: submenu floats over the sidebar content */
+.sidebar-nav{position:relative}
+.nav-group{position:relative;margin:4px 0}
+.nav-group-title{width:100%;display:flex;align-items:center;justify-content:space-between;padding:11px 12px;border:0;border-radius:7px;background:transparent;color:rgba(255,255,255,.88);text-align:left;font-size:11px;font-weight:750;letter-spacing:.65px;cursor:pointer}
+.nav-group-title:hover,.nav-group:focus-within>.nav-group-title{background:rgba(255,255,255,.13);color:#fff}
+.nav-caret{font-size:15px;transition:transform .18s ease}
+.nav-dropdown{display:none;position:absolute;z-index:1000;left:8px;right:8px;top:calc(100% - 1px);margin:0;padding:6px;background:#116f49;border:1px solid rgba(255,255,255,.18);border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.22)}
+.nav-group:hover>.nav-dropdown,.nav-group:focus-within>.nav-dropdown{display:block}
+.nav-group:hover>.nav-group-title .nav-caret,.nav-group:focus-within>.nav-group-title .nav-caret{transform:rotate(180deg)}
+.sidebar .nav-dropdown .nav-link{display:block;margin:2px 0;padding:10px 11px;border-radius:5px;color:#fff;font-size:12px;white-space:normal}
+.sidebar .nav-dropdown .nav-link:hover,.sidebar .nav-dropdown .nav-link.active{background:#1769e8;color:#fff}
+.nav-group.has-active>.nav-group-title{background:rgba(255,255,255,.10);color:#fff}
+.nav-group-title:focus-visible,.sidebar .nav-link:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media(hover:none){.nav-group:focus-within>.nav-dropdown{display:block}}
+@media(max-width:600px){
+ .sidebar{max-height:none}
+ .sidebar-nav{max-height:65vh;overflow-y:auto}
+ .nav-dropdown{position:static;margin:2px 8px 6px 8px;box-shadow:none}
+}
+
+/* GridView du lieu that tu SQL Server */
+.db-grid{width:100%;margin-bottom:0;vertical-align:middle;font-size:12px}
+.db-grid th{background:#f7f9fb;color:#65788b;font-weight:700;white-space:nowrap;border-bottom:1px solid #e4eaf0;padding:12px 10px}
+.db-grid td{padding:11px 10px;border-color:#edf0f3;color:#425466}
+.db-grid tr:hover td{background:#f8fbfa}
+.db-empty{display:block;padding:18px;color:#8995a1;text-align:center}
+.db-message{display:block;margin:0 0 14px;padding:10px 13px;border-radius:7px;background:#fff3cd;color:#856404;font-size:12px}
+
+/* Trang đăng nhập */
+.login-page{min-height:100vh;background:linear-gradient(135deg,#eaf4ef 0%,#f4f7f8 55%,#e6f0eb 100%)}
+.login-wrapper{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-card{width:100%;max-width:430px;background:#fff;border:1px solid #e6ece9;border-radius:16px;padding:34px 36px;box-shadow:0 18px 55px rgba(20,70,48,.10)}
+.login-brand{display:flex;align-items:center;gap:12px;margin-bottom:34px}
+.login-logo{width:46px;height:46px;border-radius:12px;background:#168454;color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800}
+.login-brand-name{font-size:18px;font-weight:850;letter-spacing:.5px;color:#173b2c}
+.login-brand-sub{font-size:9px;letter-spacing:1.6px;font-weight:800;color:#168454}
+.login-heading h1{font-size:23px;font-weight:750;color:#1e2932;margin:0 0 7px}
+.login-heading p{font-size:13px;color:#81909a;margin:0 0 25px}
+.login-card .form-label{font-size:12px;font-weight:650;color:#46535d}
+.login-input{height:45px;border-color:#dce5e0;font-size:13px}
+.login-input:focus{border-color:#168454;box-shadow:0 0 0 .2rem rgba(22,132,84,.12)}
+.login-button{width:100%;height:45px;margin-top:8px;font-size:13px;font-weight:750;letter-spacing:.5px}
+.login-message{display:block;min-height:18px;margin:4px 0 8px;color:#c0392b;font-size:12px}
+.login-footer{text-align:center;margin-top:25px;color:#9aa5ad;font-size:10px}
+.admin-info{display:flex;flex-direction:column;gap:2px}
+.logout-link{font-size:10px;color:rgba(255,255,255,.82);text-decoration:none;margin-top:3px}
+.logout-link:hover{color:#fff;text-decoration:underline}
