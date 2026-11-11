@@ -6,6 +6,7 @@ namespace QLCHTT_WebForms_Frontend
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+        
             if (!IsPostBack)
             {
                 DuLieu.GanGiaTri(this, "lblTongSanPham", "SELECT COUNT(*) FROM dbo.SanPham");
