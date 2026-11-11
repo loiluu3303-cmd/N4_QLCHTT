@@ -10,12 +10,12 @@
     <div class="panel-card">
         <!-- Khu vực tìm kiếm và nút thêm -->
         <div class="toolbar">
-            <asp:TextBox ID="txtTimKiem" runat="server" CssClass="form-control search-box" placeholder="Tìm kiếm theo mã, khách hàng, lý do..." />
+            <asp:TextBox ID="txtTimKiem" runat="server" CssClass="form-control search-box" placeholder="Tìm kiếm theo mã, khách hàng, sản phẩm, lý do..." />
             <asp:Button ID="btnTimKiem" runat="server" Text="Tìm kiếm" CssClass="btn btn-outline-secondary" OnClick="btnTimKiem_Click" />
             <asp:Button ID="btnThemYeuCauTop" runat="server" Text="Thêm yêu cầu đổi trả" CssClass="btn btn-success ms-auto" OnClick="btnThemYeuCauTop_Click" />
         </div>
 
-        <!-- Form nhập thông tin đổi trả -->
+        <!-- Form nhập thông tin đổi trả (Đầy đủ các khung nhập) -->
         <div class="row g-3 mb-3">
             <div class="col-12 col-md-6">
                 <label class="form-label">Mã hóa đơn</label>
@@ -27,7 +27,7 @@
             </div>
             <div class="col-12 col-md-6">
                 <label class="form-label">Sản phẩm</label>
-                <asp:TextBox ID="txtSanPham" runat="server" CssClass="form-control" placeholder="Nhập tên/mã sản phẩm" />
+                <asp:TextBox ID="txtSanPham" runat="server" CssClass="form-control" placeholder="Nhập tên sản phẩm" />
             </div>
             <div class="col-12 col-md-6">
                 <label class="form-label">Loại yêu cầu</label>
@@ -55,7 +55,7 @@
         <!-- Thông báo -->
         <asp:Label ID="lblThongBao" runat="server" CssClass="db-message alert alert-info d-block" Visible="false" />
 
-        <!-- Lưới dữ liệu -->
+        <!-- Lưới dữ liệu (Đã có cột Sản phẩm và Mã đổi trả) -->
         <div class="table-responsive">
             <asp:GridView ID="gvData" runat="server" CssClass="table db-grid" GridLines="None"
                 AutoGenerateColumns="false" EmptyDataText="Database chưa có dữ liệu cho mục này."
@@ -63,6 +63,7 @@
                 <Columns>
                     <asp:BoundField DataField="MaDoiTra" HeaderText="Mã đổi trả" />
                     <asp:BoundField DataField="MaHoaDon" HeaderText="Mã hóa đơn" />
+                    <asp:BoundField DataField="SanPham" HeaderText="Sản phẩm" />
                     <asp:BoundField DataField="KhachHang" HeaderText="Khách hàng" />
                     <asp:BoundField DataField="NgayDoiTra" HeaderText="Ngày đổi trả" DataFormatString="{0:dd/MM/yyyy}" />
                     <asp:BoundField DataField="LyDo" HeaderText="Lý do" />
