@@ -7,20 +7,6 @@ namespace QLCHTT_WebForms_Frontend
 {
     public partial class DoiTraHang : Page
     {
-        // Khai báo thủ công các Control để tránh hoàn toàn lỗi context
-        protected global::System.Web.UI.WebControls.TextBox txtTimKiem;
-        protected global::System.Web.UI.WebControls.Button btnTimKiem;
-        protected global::System.Web.UI.WebControls.Button btnThemYeuCauTop;
-        protected global::System.Web.UI.WebControls.TextBox txtMaHoaDon;
-        protected global::System.Web.UI.WebControls.TextBox txtKhachHang;
-        protected global::System.Web.UI.WebControls.TextBox txtSanPham;
-        protected global::System.Web.UI.WebControls.DropDownList ddlLoaiYeuCau;
-        protected global::System.Web.UI.WebControls.TextBox txtLyDo;
-        protected global::System.Web.UI.WebControls.TextBox txtTongTienHoan;
-        protected global::System.Web.UI.WebControls.Button btnLuu;
-        protected global::System.Web.UI.WebControls.Button btnLamMoi;
-        protected global::System.Web.UI.WebControls.Label lblThongBao;
-        protected global::System.Web.UI.WebControls.GridView gvData;
 
         // Quản lý dữ liệu bằng ViewState để thêm mới và hiển thị trực tiếp lên GridView
         private DataTable DanhSachDoiTra

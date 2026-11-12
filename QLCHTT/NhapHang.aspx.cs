@@ -7,20 +7,6 @@ namespace QLCHTT_WebForms_Frontend
 {
     public partial class NhapHang : System.Web.UI.Page
     {
-        // Khai báo các control để tránh lỗi biên dịch
-        protected global::System.Web.UI.WebControls.TextBox txtTuKhoa;
-        protected global::System.Web.UI.WebControls.Button btnTimKiem;
-        protected global::System.Web.UI.WebControls.Button btnTaoMoi;
-        protected global::System.Web.UI.WebControls.TextBox txtMaPN;
-        protected global::System.Web.UI.WebControls.TextBox txtNgayNhap;
-        protected global::System.Web.UI.WebControls.DropDownList ddlMaNCC;
-        protected global::System.Web.UI.WebControls.DropDownList ddlMaNV;
-        protected global::System.Web.UI.WebControls.DropDownList ddlMaSP;
-        protected global::System.Web.UI.WebControls.TextBox txtTongTien;
-        protected global::System.Web.UI.WebControls.Button btnLuu;
-        protected global::System.Web.UI.WebControls.Button btnLamMoi;
-        protected global::System.Web.UI.WebControls.Label lblThongBao;
-        protected global::System.Web.UI.WebControls.GridView gvData;
 
         protected void Page_Load(object sender, EventArgs e)
         {

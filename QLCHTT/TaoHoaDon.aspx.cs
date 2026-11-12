@@ -20,21 +20,6 @@ namespace QLCHTT_WebForms_Frontend
 
     public partial class TaoHoaDon : Page
     {
-        // Khai báo thủ công các Control để triệt tiêu lỗi "does not exist in the current context"
-        protected global::System.Web.UI.WebControls.TextBox txtMaHD;
-        protected global::System.Web.UI.WebControls.DropDownList ddlKhachHang;
-        protected global::System.Web.UI.WebControls.TextBox txtNhanVien;
-        protected global::System.Web.UI.WebControls.DropDownList ddlSanPham;
-        protected global::System.Web.UI.WebControls.TextBox txtSoLuong;
-        protected global::System.Web.UI.WebControls.DropDownList ddlKhuyenMai;
-        protected global::System.Web.UI.WebControls.Button btnThemSP;
-        protected global::System.Web.UI.WebControls.Button btnLamMoi;
-        protected global::System.Web.UI.WebControls.Label lblTamTinh;
-        protected global::System.Web.UI.WebControls.Label lblGiamGia;
-        protected global::System.Web.UI.WebControls.Label lblTongThanhToan;
-        protected global::System.Web.UI.WebControls.Button btnLuuHoaDon;
-        protected global::System.Web.UI.WebControls.Label lblThongBao;
-        protected global::System.Web.UI.WebControls.GridView gvGioHang;
 
         // Giỏ hàng lưu trữ tạm trong ViewState của trang
         private List<ChiTietHoaDonItem> GioHang

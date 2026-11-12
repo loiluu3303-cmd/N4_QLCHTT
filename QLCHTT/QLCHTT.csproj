@@ -1,4 +1,5 @@
-﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.0" DefaultTargets="Build">
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -43,6 +44,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -60,11 +64,6 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="BaoCao.aspx" />
@@ -182,7 +181,7 @@
     <Compile Include="TonKho.aspx.cs">
       <DependentUpon>TonKho.aspx</DependentUpon>
     </Compile>
-  </ItemGroup>
+  <Compile Include="TonKho.aspx.designer.cs"><DependentUpon>TonKho.aspx</DependentUpon></Compile><Compile Include="CaiDat.aspx.designer.cs"><DependentUpon>CaiDat.aspx</DependentUpon></Compile><Compile Include="SanPham.aspx.designer.cs"><DependentUpon>SanPham.aspx</DependentUpon></Compile><Compile Include="Default.aspx.designer.cs"><DependentUpon>Default.aspx</DependentUpon></Compile><Compile Include="NhaCungCap.aspx.designer.cs"><DependentUpon>NhaCungCap.aspx</DependentUpon></Compile><Compile Include="DoiTraHang.aspx.designer.cs"><DependentUpon>DoiTraHang.aspx</DependentUpon></Compile><Compile Include="NguoiDung.aspx.designer.cs"><DependentUpon>NguoiDung.aspx</DependentUpon></Compile><Compile Include="NhapHang.aspx.designer.cs"><DependentUpon>NhapHang.aspx</DependentUpon></Compile><Compile Include="TaiKhoan.aspx.designer.cs"><DependentUpon>TaiKhoan.aspx</DependentUpon></Compile><Compile Include="NhanVien.aspx.designer.cs"><DependentUpon>NhanVien.aspx</DependentUpon></Compile><Compile Include="KiemKe.aspx.designer.cs"><DependentUpon>KiemKe.aspx</DependentUpon></Compile><Compile Include="DonHang.aspx.designer.cs"><DependentUpon>DonHang.aspx</DependentUpon></Compile><Compile Include="DanhMuc.aspx.designer.cs"><DependentUpon>DanhMuc.aspx</DependentUpon></Compile><Compile Include="KhachHang.aspx.designer.cs"><DependentUpon>KhachHang.aspx</DependentUpon></Compile><Compile Include="Logout.aspx.designer.cs"><DependentUpon>Logout.aspx</DependentUpon></Compile><Compile Include="KhuyenMai.aspx.designer.cs"><DependentUpon>KhuyenMai.aspx</DependentUpon></Compile><Compile Include="BaoCao.aspx.designer.cs"><DependentUpon>BaoCao.aspx</DependentUpon></Compile><Compile Include="TaoHoaDon.aspx.designer.cs"><DependentUpon>TaoHoaDon.aspx</DependentUpon></Compile></ItemGroup>
   <ItemGroup>
     <Content Include="Site.Master" />
     <Content Include="Scripts\bootstrap.min.js.map" />
@@ -246,11 +245,5 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  
 </Project>

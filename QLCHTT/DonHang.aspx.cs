@@ -8,15 +8,6 @@ namespace QLCHTT_WebForms_Frontend
 {
     public partial class DonHang : Page
     {
-        // Khai báo thủ công các Control để tránh lỗi context
-        protected global::System.Web.UI.WebControls.Button btnTaoDonHang;
-        protected global::System.Web.UI.WebControls.TextBox txtTimKiem;
-        protected global::System.Web.UI.WebControls.DropDownList ddlTrangThai;
-        protected global::System.Web.UI.WebControls.Button btnLoc;
-        protected global::System.Web.UI.WebControls.Label lblThongBao;
-        protected global::System.Web.UI.WebControls.GridView gvData;
-        protected global::System.Web.UI.WebControls.Label lblThongBaoChiTiet;
-        protected global::System.Web.UI.WebControls.GridView gvChiTiet;
 
         protected void Page_Load(object sender, EventArgs e)
         {
