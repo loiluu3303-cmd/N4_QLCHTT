@@ -1,5 +1,4 @@
-<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="QLCHTT_WebForms_Frontend.SiteMaster" %>
-<!DOCTYPE html>
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="QLCHTT_WebForms_Frontend.SiteMaster" %><!DOCTYPE html>
 <html lang="vi">
 <head runat="server">
     <meta charset="utf-8" />
@@ -68,15 +67,25 @@
         </nav>
         <div class="sidebar-bottom">
             <div class="admin-avatar">A</div>
-            <div class="admin-info"><strong><asp:Label ID="lblTenNguoiDung" runat="server" Text="Tài khoản" /></strong><small><asp:Label ID="lblQuyenNguoiDung" runat="server" Text="Người dùng" /></small><a class="logout-link" href="Logout.aspx">Đăng xuất</a></div>
+            <div class="admin-info">
+                <strong><asp:Label ID="lblTenNguoiDung" runat="server" Text="Tài khoản" /></strong>
+                <small><asp:Label ID="lblQuyenNguoiDung" runat="server" Text="Người dùng" /></small>
+                <a class="logout-link" href="Logout.aspx">Đăng xuất</a>
+            </div>
         </div>
     </aside>
     <main class="main-area">
         <header class="topbar">
-            <div class="topbar-left"><span class="topbar-title">Hệ thống quản lý cửa hàng thời trang</span><span class="status-dot"></span><span class="status-text">Giao diện Front-end</span></div>
+            <div class="topbar-left">
+                <span class="topbar-title">Hệ thống quản lý cửa hàng thời trang</span>
+                <span class="status-dot"></span>
+                <span class="status-text">Giao diện Front-end</span>
+            </div>
             <div class="topbar-user">Xin chào, <strong><asp:Label ID="lblTopbarUser" runat="server" Text="Người dùng" /></strong></div>
         </header>
-        <section class="page-content"><asp:ContentPlaceHolder ID="MainContent" runat="server" /></section>
+        <section class="page-content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+        </section>
         <footer class="footer">© 2026 - Hệ thống quản lý cửa hàng thời trang</footer>
     </main>
 </div>

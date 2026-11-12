@@ -1,58 +1,51 @@
-<%@ Page Title="Danh mục sản phẩm" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="DanhMuc.aspx.cs" Inherits="QLCHTT_WebForms_Frontend.DanhMuc" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-<div class="page-heading">
-    <div>
-        <h1>Danh mục sản phẩm</h1>
-        <p>Quản lý nhóm và loại sản phẩm thời trang.</p>
-    </div>
-</div>
+<%@ Page Title="Quản lý danh mục" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="DanhMuc.aspx.cs" Inherits="QLCHTT_WebForms_Frontend.DanhMuc" %>
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+    <div class="container-fluid">
+        <h2 class="mb-4">Quản Lý Danh Mục Sản Phẩm</h2>
+        <asp:Label ID="lblThongBao" runat="server" CssClass="alert alert-info d-block" Visible="false" />
 
-<div class="panel-card">
-    <!-- Toolbar tìm kiếm -->
-    <div class="toolbar mb-3 d-flex gap-2">
-        <asp:TextBox ID="txtSearch" runat="server" CssClass="form-control search-box w-auto" placeholder="Tìm kiếm..." />
-        <asp:Button ID="btnSearch" runat="server" CssClass="btn btn-outline-secondary" Text="Tìm kiếm" OnClick="btnSearch_Click" />
-    </div>
-
-    <!-- Khung nhập liệu (Thêm / Sửa) -->
-    <div class="row g-3 mb-3">
-        <div class="col-12 col-md-4">
-            <label class="form-label">Mã loại sản phẩm</label>
-            <asp:TextBox ID="txtMaLoai" runat="server" CssClass="form-control" placeholder="LSP01" />
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <asp:TextBox ID="txtSearch" runat="server" CssClass="form-control" placeholder="Tìm kiếm danh mục..." />
+                    <asp:Button ID="btnSearch" runat="server" Text="Tìm kiếm" CssClass="btn btn-secondary" OnClick="btnSearch_Click" CausesValidation="false" />
+                </div>
+            </div>
         </div>
-        <div class="col-12 col-md-4">
-            <label class="form-label">Tên loại sản phẩm</label>
-            <asp:TextBox ID="txtTenLoai" runat="server" CssClass="form-control" placeholder="Áo / Quần / Váy đầm" />
+
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card p-3">
+                    <h4>Thông tin danh mục</h4>
+                    <div class="mb-2">
+                        <label>Mã loại</label>
+                        <asp:TextBox ID="txtMaLoai" runat="server" CssClass="form-control" placeholder="Ví dụ: L01" />
+                    </div>
+                    <div class="mb-2">
+                        <label>Tên loại sản phẩm</label>
+                        <asp:TextBox ID="txtTenLoai" runat="server" CssClass="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label>Mô tả</label>
+                        <asp:TextBox ID="txtMoTa" runat="server" TextMode="MultiLine" Rows="3" CssClass="form-control" />
+                    </div>
+                    <div>
+                        <asp:Button ID="btnSave" runat="server" Text="Lưu" CssClass="btn btn-success" OnClick="btnSave_Click" />
+                        <asp:Button ID="btnDelete" runat="server" Text="Xóa" CssClass="btn btn-danger" OnClick="btnDelete_Click" CausesValidation="false" />
+                        <asp:Button ID="btnReset" runat="server" Text="Làm mới" CssClass="btn btn-secondary" OnClick="btnReset_Click" CausesValidation="false" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <asp:GridView ID="gvData" runat="server" CssClass="table table-striped table-bordered" AutoGenerateColumns="False" OnSelectedIndexChanged="gvData_SelectedIndexChanged" DataKeyNames="MaLoai">
+                    <Columns>
+                        <asp:BoundField DataField="MaLoai" HeaderText="Mã loại" />
+                        <asp:BoundField DataField="TenLoai" HeaderText="Tên loại sản phẩm" />
+                        <asp:BoundField DataField="MoTa" HeaderText="Mô tả" />
+                        <asp:CommandField ShowSelectButton="True" SelectText="Chọn" />
+                    </Columns>
+                </asp:GridView>
+            </div>
         </div>
-        <div class="col-12 col-md-4">
-            <label class="form-label">Mô tả</label>
-            <asp:TextBox ID="txtMoTa" runat="server" CssClass="form-control" placeholder="Mô tả danh mục" />
-        </div>
     </div>
-
-    <!-- Các nút thao tác -->
-    <div class="d-flex gap-2 mb-3">
-        <asp:Button ID="btnSave" runat="server" CssClass="btn btn-success" Text="Thêm mới" OnClick="btnSave_Click" />
-        <asp:Button ID="btnUpdate" runat="server" CssClass="btn btn-primary" Text="Cập nhật" OnClick="btnUpdate_Click" />
-        <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger" Text="Xóa" OnClick="btnDelete_Click" OnClientClick="return confirm('Bạn có chắc chắn muốn xóa loại sản phẩm này không?');" />
-        <asp:Button ID="btnRefresh" runat="server" CssClass="btn btn-outline-secondary ms-auto" Text="Làm mới" OnClick="btnRefresh_Click" />
-    </div>
-
-    <!-- Thông báo trạng thái lỗi hoặc thành công -->
-    <asp:Label ID="lblThongBao" runat="server" CssClass="db-message mb-3 d-block" Visible="false" />
-
-    <!-- Bảng hiển thị dữ liệu -->
-    <div class="table-responsive">
-        <asp:GridView ID="gvData" runat="server" CssClass="table db-grid" GridLines="None"
-            AutoGenerateColumns="true" EmptyDataText="Database chưa có dữ liệu cho mục này."
-            EmptyDataRowStyle-CssClass="db-empty" 
-            OnSelectedIndexChanged="gvData_SelectedIndexChanged">
-            <Columns>
-                <asp:CommandField ShowSelectButton="True" SelectText="Chọn" ControlStyle-CssClass="btn btn-sm btn-outline-primary" />
-            </Columns>
-        </asp:GridView>
-    </div>
-    
-    <div class="table-foot mt-3 text-muted">Dữ liệu trong bảng được đọc trực tiếp từ bảng <b>LoaiSanPham</b> trong database QLCHTT.</div>
-</div>
 </asp:Content>

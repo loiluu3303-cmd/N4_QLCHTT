@@ -4,22 +4,28 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Web;
 using System.Web.UI.WebControls;
-using System.Xml.Linq;
 
 namespace QLCHTT_WebForms_Frontend
 {
     public partial class NhaCungCap : System.Web.UI.Page
     {
+        // Khai báo tường minh để khớp chính xác với txtTimKiem
+        protected TextBox txtTimKiem;
+        protected TextBox txtMaNCC;
+        protected TextBox txtTenNCC;
+        protected TextBox txtSDT;
+        protected TextBox txtEmail;
+        protected TextBox txtDiaChi;
+        protected GridView gvData;
+        protected Label lblThongBao;
+
         string connStr = ConfigurationManager.ConnectionStrings["QLCHTTConnectionString"] != null
             ? ConfigurationManager.ConnectionStrings["QLCHTTConnectionString"].ConnectionString
-            : @"Data Source=.;Initial Catalog=QLCHTT;Integrated Security=True";
+            : @"Data Source=.\SQLEXPRESS;Initial Catalog=QLCHTT;Integrated Security=True";
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                LoadData();
-            }
+            if (!IsPostBack) LoadData();
         }
 
         private void LoadData(string keyword = "")
@@ -28,42 +34,35 @@ namespace QLCHTT_WebForms_Frontend
             {
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
-                    string query = "SELECT * FROM NhaCungCap";
+                    string query = "SELECT * FROM NhaCungCap WHERE 1=1";
                     if (!string.IsNullOrEmpty(keyword))
                     {
-                        query += " WHERE MaNCC LIKE @keyword OR TenNCC LIKE @keyword OR SDT LIKE @keyword OR Email LIKE @keyword OR DiaChi LIKE @keyword";
+                        query += " AND (MaNCC LIKE @keyword OR TenNCC LIKE @keyword OR SDT LIKE @keyword)";
                     }
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         if (!string.IsNullOrEmpty(keyword))
-                        {
                             cmd.Parameters.AddWithValue("@keyword", "%" + keyword + "%");
-                        }
 
                         using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                         {
                             DataTable dt = new DataTable();
                             da.Fill(dt);
-
-                            gvData.DataSource = dt;
-                            gvData.DataBind();
+                            if (gvData != null) { gvData.DataSource = dt; gvData.DataBind(); }
                         }
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                ShowMessage("Lỗi kết nối hoặc tải dữ liệu: " + ex.Message, false);
-            }
+            catch (Exception ex) { ShowMessage("Lỗi tải dữ liệu: " + ex.Message, false); }
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            LoadData(txtSearch.Text.Trim());
+            string keyword = txtTimKiem != null ? txtTimKiem.Text.Trim() : "";
+            LoadData(keyword);
         }
 
-        // Thêm mới nhà cung cấp
         protected void btnSave_Click(object sender, EventArgs e)
         {
             string maNCC = txtMaNCC.Text.Trim();
@@ -74,7 +73,7 @@ namespace QLCHTT_WebForms_Frontend
 
             if (string.IsNullOrEmpty(maNCC) || string.IsNullOrEmpty(tenNCC))
             {
-                ShowMessage("Vui lòng nhập đầy đủ Mã nhà cung cấp và Tên nhà cung cấp!", false);
+                ShowMessage("Vui lòng nhập Mã NCC và Tên nhà cung cấp!", false);
                 return;
             }
 
@@ -87,86 +86,48 @@ namespace QLCHTT_WebForms_Frontend
                     using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
                     {
                         checkCmd.Parameters.AddWithValue("@MaNCC", maNCC);
-                        if ((int)checkCmd.ExecuteScalar() > 0)
+                        int count = (int)checkCmd.ExecuteScalar();
+
+                        if (count > 0)
                         {
-                            ShowMessage("Mã nhà cung cấp này đã tồn tại trong hệ thống!", false);
-                            return;
+                            string updateQuery = "UPDATE NhaCungCap SET TenNCC = @TenNCC, SDT = @SDT, Email = @Email, DiaChi = @DiaChi WHERE MaNCC = @MaNCC";
+                            using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
+                            {
+                                cmd.Parameters.AddWithValue("@MaNCC", maNCC);
+                                cmd.Parameters.AddWithValue("@TenNCC", tenNCC);
+                                cmd.Parameters.AddWithValue("@SDT", string.IsNullOrEmpty(sdt) ? (object)DBNull.Value : sdt);
+                                cmd.Parameters.AddWithValue("@Email", string.IsNullOrEmpty(email) ? (object)DBNull.Value : email);
+                                cmd.Parameters.AddWithValue("@DiaChi", string.IsNullOrEmpty(diaChi) ? (object)DBNull.Value : diaChi);
+                                cmd.ExecuteNonQuery();
+                            }
+                            ShowMessage("Cập nhật nhà cung cấp thành công!", true);
+                        }
+                        else
+                        {
+                            string insertQuery = "INSERT INTO NhaCungCap (MaNCC, TenNCC, SDT, Email, DiaChi) VALUES (@MaNCC, @TenNCC, @SDT, @Email, @DiaChi)";
+                            using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
+                            {
+                                cmd.Parameters.AddWithValue("@MaNCC", maNCC);
+                                cmd.Parameters.AddWithValue("@TenNCC", tenNCC);
+                                cmd.Parameters.AddWithValue("@SDT", string.IsNullOrEmpty(sdt) ? (object)DBNull.Value : sdt);
+                                cmd.Parameters.AddWithValue("@Email", string.IsNullOrEmpty(email) ? (object)DBNull.Value : email);
+                                cmd.Parameters.AddWithValue("@DiaChi", string.IsNullOrEmpty(diaChi) ? (object)DBNull.Value : diaChi);
+                                cmd.ExecuteNonQuery();
+                            }
+                            ShowMessage("Thêm nhà cung cấp thành công!", true);
                         }
                     }
-
-                    string insertQuery = "INSERT INTO NhaCungCap (MaNCC, TenNCC, SDT, DiaChi, Email) VALUES (@MaNCC, @TenNCC, @SDT, @DiaChi, @Email)";
-                    using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@MaNCC", maNCC);
-                        cmd.Parameters.AddWithValue("@TenNCC", tenNCC);
-                        cmd.Parameters.AddWithValue("@SDT", string.IsNullOrEmpty(sdt) ? (object)DBNull.Value : sdt);
-                        cmd.Parameters.AddWithValue("@DiaChi", string.IsNullOrEmpty(diaChi) ? (object)DBNull.Value : diaChi);
-                        cmd.Parameters.AddWithValue("@Email", string.IsNullOrEmpty(email) ? (object)DBNull.Value : email);
-                        cmd.ExecuteNonQuery();
-                    }
                 }
-
-                ShowMessage("Thêm mới nhà cung cấp thành công!", true);
                 LoadData();
                 ClearForm();
             }
-            catch (Exception ex)
-            {
-                ShowMessage("Lỗi khi thêm: " + ex.Message, false);
-            }
+            catch (Exception ex) { ShowMessage("Lỗi lưu dữ liệu: " + ex.Message, false); }
         }
 
-        // Cập nhật nhà cung cấp
-        protected void btnUpdate_Click(object sender, EventArgs e)
-        {
-            string maNCC = txtMaNCC.Text.Trim();
-            string tenNCC = txtTenNCC.Text.Trim();
-            string sdt = txtSDT.Text.Trim();
-            string email = txtEmail.Text.Trim();
-            string diaChi = txtDiaChi.Text.Trim();
-
-            if (string.IsNullOrEmpty(maNCC))
-            {
-                ShowMessage("Vui lòng chọn nhà cung cấp cần cập nhật từ bảng phía dưới!", false);
-                return;
-            }
-
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connStr))
-                {
-                    conn.Open();
-                    string updateQuery = "UPDATE NhaCungCap SET TenNCC = @TenNCC, SDT = @SDT, DiaChi = @DiaChi, Email = @Email WHERE MaNCC = @MaNCC";
-                    using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@MaNCC", maNCC);
-                        cmd.Parameters.AddWithValue("@TenNCC", tenNCC);
-                        cmd.Parameters.AddWithValue("@SDT", string.IsNullOrEmpty(sdt) ? (object)DBNull.Value : sdt);
-                        cmd.Parameters.AddWithValue("@DiaChi", string.IsNullOrEmpty(diaChi) ? (object)DBNull.Value : diaChi);
-                        cmd.Parameters.AddWithValue("@Email", string.IsNullOrEmpty(email) ? (object)DBNull.Value : email);
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-
-                ShowMessage("Cập nhật thành công!", true);
-                LoadData();
-                ClearForm();
-            }
-            catch (Exception ex)
-            {
-                ShowMessage("Lỗi khi cập nhật: " + ex.Message, false);
-            }
-        }
-
-        // Xóa nhà cung cấp
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             string maNCC = txtMaNCC.Text.Trim();
-            if (string.IsNullOrEmpty(maNCC))
-            {
-                ShowMessage("Vui lòng chọn nhà cung cấp cần xóa từ bảng!", false);
-                return;
-            }
+            if (string.IsNullOrEmpty(maNCC)) { ShowMessage("Vui lòng chọn nhà cung cấp cần xóa!", false); return; }
 
             try
             {
@@ -180,37 +141,34 @@ namespace QLCHTT_WebForms_Frontend
                         cmd.ExecuteNonQuery();
                     }
                 }
-
-                ShowMessage("Xóa thành công!", true);
+                ShowMessage("Xóa nhà cung cấp thành công!", true);
                 LoadData();
                 ClearForm();
             }
-            catch (Exception ex)
-            {
-                ShowMessage("Không thể xóa (Nhà cung cấp này đang có phiếu nhập kho liên quan): " + ex.Message, false);
-            }
+            catch (Exception ex) { ShowMessage("Không thể xóa (Đang có phiếu nhập kho từ NCC này): " + ex.Message, false); }
         }
 
-        // Sự kiện khi bấm "Chọn" trên bảng để đưa dữ liệu lên form sửa
-        protected void gvData_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            GridViewRow row = gvData.SelectedRow;
-            txtMaNCC.Text = row.Cells[1].Text.Trim();
-            txtTenNCC.Text = HttpUtility.HtmlDecode(row.Cells[2].Text).Trim();
-            txtSDT.Text = HttpUtility.HtmlDecode(row.Cells[3].Text).Trim() == "&nbsp;" ? "" : HttpUtility.HtmlDecode(row.Cells[3].Text).Trim();
-            txtEmail.Text = HttpUtility.HtmlDecode(row.Cells[4].Text).Trim() == "&nbsp;" ? "" : HttpUtility.HtmlDecode(row.Cells[4].Text).Trim();
-            txtDiaChi.Text = HttpUtility.HtmlDecode(row.Cells[5].Text).Trim() == "&nbsp;" ? "" : HttpUtility.HtmlDecode(row.Cells[5].Text).Trim();
-
-            txtMaNCC.ReadOnly = true; // Khóa mã khi cập nhật
-            lblThongBao.Visible = false;
-        }
-
-        protected void btnRefresh_Click(object sender, EventArgs e)
+        protected void btnReset_Click(object sender, EventArgs e)
         {
             ClearForm();
-            txtSearch.Text = "";
+            if (txtTimKiem != null) txtTimKiem.Text = "";
             LoadData();
-            lblThongBao.Visible = false;
+            if (lblThongBao != null) lblThongBao.Visible = false;
+        }
+
+        protected void gvData_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (gvData != null && gvData.SelectedRow != null)
+            {
+                GridViewRow row = gvData.SelectedRow;
+                txtMaNCC.Text = HttpUtility.HtmlDecode(row.Cells[1].Text).Trim();
+                txtTenNCC.Text = HttpUtility.HtmlDecode(row.Cells[2].Text).Trim();
+                txtSDT.Text = HttpUtility.HtmlDecode(row.Cells[3].Text).Trim() == "&nbsp;" ? "" : HttpUtility.HtmlDecode(row.Cells[3].Text).Trim();
+                txtEmail.Text = row.Cells.Count > 4 && HttpUtility.HtmlDecode(row.Cells[4].Text).Trim() != "&nbsp;" ? HttpUtility.HtmlDecode(row.Cells[4].Text).Trim() : "";
+
+                txtMaNCC.ReadOnly = true;
+                if (lblThongBao != null) lblThongBao.Visible = false;
+            }
         }
 
         private void ClearForm()
@@ -225,9 +183,12 @@ namespace QLCHTT_WebForms_Frontend
 
         private void ShowMessage(string message, bool isSuccess)
         {
-            lblThongBao.Text = message;
-            lblThongBao.Visible = true;
-            lblThongBao.CssClass = isSuccess ? "db-message text-success fw-bold mb-3" : "db-message text-danger fw-bold mb-3";
+            if (lblThongBao != null)
+            {
+                lblThongBao.Text = message;
+                lblThongBao.Visible = true;
+                lblThongBao.CssClass = isSuccess ? "db-message text-success fw-bold mb-3" : "db-message text-danger fw-bold mb-3";
+            }
         }
     }
 }

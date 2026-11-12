@@ -1,12 +1,17 @@
-
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Web.UI.WebControls;
 
 namespace QLCHTT_WebForms_Frontend
 {
     public partial class NhanVien : System.Web.UI.Page
     {
+        // Khai báo tường minh các control để chống triệt để lỗi mất context
+        protected TextBox txtTimKiem;
+        protected GridView gvData;
+        protected Label lblThongBao;
+
         private readonly string strKetNoi =
             @"Data Source=.\SQLEXPRESS;Initial Catalog=QLCHTT;Integrated Security=True;Encrypt=False";
 
@@ -51,33 +56,38 @@ namespace QLCHTT_WebForms_Frontend
                             DataTable dt = new DataTable();
                             adapter.Fill(dt);
 
-                            gvData.DataSource = dt;
-                            gvData.DataBind();
+                            if (gvData != null)
+                            {
+                                gvData.DataSource = dt;
+                                gvData.DataBind();
+                            }
                         }
                     }
                 }
 
-                lblThongBao.Visible = false;
+                if (lblThongBao != null) lblThongBao.Visible = false;
             }
             catch (Exception ex)
             {
-                lblThongBao.Text =
-                    "Lỗi tải danh sách nhân viên: " + Server.HtmlEncode(ex.Message);
-
-                lblThongBao.Visible = true;
+                if (lblThongBao != null)
+                {
+                    lblThongBao.Text = "Lỗi tải danh sách nhân viên: " + Server.HtmlEncode(ex.Message);
+                    lblThongBao.Visible = true;
+                }
             }
         }
 
         // Tìm kiếm nhân viên
         protected void btnTimKiem_Click(object sender, EventArgs e)
         {
-            LoadNhanVien(txtTimKiem.Text);
+            string keyword = txtTimKiem != null ? txtTimKiem.Text : "";
+            LoadNhanVien(keyword);
         }
 
         // Làm mới danh sách
         protected void btnLamMoi_Click(object sender, EventArgs e)
         {
-            txtTimKiem.Text = "";
+            if (txtTimKiem != null) txtTimKiem.Text = "";
             LoadNhanVien("");
         }
     }

@@ -1,130 +1,165 @@
 using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace QLCHTT_WebForms_Frontend
 {
     public partial class KiemKe : System.Web.UI.Page
     {
+        // Khai báo tường minh tất cả các control để triệt để hết lỗi mất context
+        protected TextBox txtTimKiem;
+        protected TextBox txtTuKhoa;
+        protected DropDownList ddlMaSP;
+        protected TextBox txtSoLuongThucTe;
+        protected GridView gvData;
+        protected Label lblThongBao;
+
+        string connStr = ConfigurationManager.ConnectionStrings["QLCHTTConnectionString"] != null
+            ? ConfigurationManager.ConnectionStrings["QLCHTTConnectionString"].ConnectionString
+            : @"Data Source=.\SQLEXPRESS;Initial Catalog=QLCHTT;Integrated Security=True";
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 LoadDropdowns();
-                LoadGridData();
+                LoadData();
             }
         }
 
         private void LoadDropdowns()
         {
-            string connStr = System.Configuration.ConfigurationManager.ConnectionStrings["QLCHTTConnectionString"]?.ConnectionString
-                              ?? "Data Source=MAY04GD3\\SQLEXPRESS;Initial Catalog=QLCHTT;Integrated Security=True";
-
-            using (SqlConnection conn = new SqlConnection(connStr))
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT MaSP, TenSP FROM dbo.SanPham", conn))
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-                    ddlMaSP.DataSource = dt;
-                    ddlMaSP.DataTextField = "TenSP";
-                    ddlMaSP.DataValueField = "MaSP";
-                    ddlMaSP.DataBind();
-                    ddlMaSP.Items.Insert(0, new System.Web.UI.WebControls.ListItem("-- Chọn sản phẩm --", ""));
-                }
-            }
-        }
-
-        private void LoadGridData(string tuKhoa = "")
-        {
-            string query = @"SELECT sp.MaSP AS [Mã sản phẩm], 
-                                    sp.TenSP AS [Tên sản phẩm],
-                                    lsp.TenLoai AS [Danh mục],
-                                    sp.SoLuong AS [Số lượng tồn thực tế],
-                                    ISNULL(sp.MauSac, N'N/A') AS [Màu sắc],
-                                    ISNULL(sp.KichThuoc, N'N/A') AS [Kích thước]
-                             FROM dbo.SanPham sp
-                             INNER JOIN dbo.LoaiSanPham lsp ON sp.MaLoai = lsp.MaLoai";
-
-            if (!string.IsNullOrEmpty(tuKhoa))
-            {
-                query += $" WHERE sp.MaSP LIKE N'%{tuKhoa}%' OR sp.TenSP LIKE N'%{tuKhoa}%'";
-            }
-
-            query += " ORDER BY sp.MaSP DESC";
-
             try
             {
-                DuLieu.GanGrid(this, "gvData", query);
+                if (ddlMaSP != null)
+                {
+                    ddlMaSP.Items.Clear();
+                    ddlMaSP.Items.Add(new ListItem("-- Chọn sản phẩm --", ""));
+
+                    using (SqlConnection conn = new SqlConnection(connStr))
+                    {
+                        string query = "SELECT MaSP, TenSP FROM SanPham";
+                        using (SqlCommand cmd = new SqlCommand(query, conn))
+                        {
+                            using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                            {
+                                DataTable dt = new DataTable();
+                                da.Fill(dt);
+                                foreach (DataRow row in dt.Rows)
+                                {
+                                    ddlMaSP.Items.Add(new ListItem(row["TenSP"].ToString() + " (" + row["MaSP"].ToString() + ")", row["MaSP"].ToString()));
+                                }
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
-                HienThiThongBao("Lỗi tải danh sách: " + ex.Message, true);
+                ShowMessage("Lỗi tải danh mục sản phẩm: " + ex.Message, false);
             }
         }
 
-        protected void btnTimKiem_Click(object sender, EventArgs e)
-        {
-            LoadGridData(txtTuKhoa.Text.Trim());
-        }
-
-        // Cập nhật thẳng số lượng tồn kho vào bảng SanPham
-        protected void btnLuu_Click(object sender, EventArgs e)
+        private void LoadData(string keyword = "")
         {
             try
             {
-                if (ddlMaSP.SelectedValue == "")
+                using (SqlConnection conn = new SqlConnection(connStr))
                 {
-                    HienThiThongBao("Vui lòng chọn sản phẩm cần kiểm kê!", true);
-                    return;
+                    string query = "SELECT MaSP, TenSP, SoLuong AS TonKho, SoLuong AS ThucTe, 0 AS ChenhLech FROM SanPham WHERE 1=1";
+                    if (!string.IsNullOrEmpty(keyword))
+                    {
+                        query += " AND (MaSP LIKE @keyword OR TenSP LIKE @keyword)";
+                    }
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        if (!string.IsNullOrEmpty(keyword))
+                            cmd.Parameters.AddWithValue("@keyword", "%" + keyword + "%");
+
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            DataTable dt = new DataTable();
+                            da.Fill(dt);
+                            if (gvData != null)
+                            {
+                                gvData.DataSource = dt;
+                                gvData.DataBind();
+                            }
+                        }
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                ShowMessage("Lỗi tải dữ liệu kiểm kê: " + ex.Message, false);
+            }
+        }
 
-                int soLuongThucTe = int.Parse(txtSoLuongThucTe.Text);
-                string maSP = ddlMaSP.SelectedValue;
+        protected void btnSearch_Click(object sender, EventArgs e)
+        {
+            // Hỗ trợ linh hoạt cả txtTimKiem hoặc txtTuKhoa
+            string keyword = "";
+            if (txtTimKiem != null) keyword = txtTimKiem.Text.Trim();
+            else if (txtTuKhoa != null) keyword = txtTuKhoa.Text.Trim();
 
-                string connStr = System.Configuration.ConfigurationManager.ConnectionStrings["QLCHTTConnectionString"]?.ConnectionString
-                                  ?? "Data Source=MAY04GD3\\SQLEXPRESS;Initial Catalog=QLCHTT;Integrated Security=True";
+            LoadData(keyword);
+        }
 
+        protected void btnSave_Click(object sender, EventArgs e)
+        {
+            string maSP = ddlMaSP != null ? ddlMaSP.SelectedValue : "";
+            int.TryParse(txtSoLuongThucTe.Text.Trim(), out int slThucTe);
+
+            if (string.IsNullOrEmpty(maSP))
+            {
+                ShowMessage("Vui lòng chọn sản phẩm cần kiểm kê!", false);
+                return;
+            }
+
+            try
+            {
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
-                    string updateQuery = "UPDATE dbo.SanPham SET SoLuong = @SoLuong WHERE MaSP = @MaSP";
+                    string updateQuery = "UPDATE SanPham SET SoLuong = @SoLuong WHERE MaSP = @MaSP";
                     using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
                     {
-                        cmd.Parameters.AddWithValue("@SoLuong", soLuongThucTe);
+                        cmd.Parameters.AddWithValue("@SoLuong", slThucTe);
                         cmd.Parameters.AddWithValue("@MaSP", maSP);
                         cmd.ExecuteNonQuery();
                     }
                 }
-
-                HienThiThongBao("Cập nhật số lượng tồn kho thành công!", false);
-                LoadGridData();
-                ddlMaSP.SelectedIndex = 0;
-                txtSoLuongThucTe.Text = "0";
+                ShowMessage("Cập nhật số lượng kiểm kê kho thành công!", true);
+                LoadData();
+                btnReset_Click(sender, e);
             }
             catch (Exception ex)
             {
-                HienThiThongBao("Lỗi khi cập nhật kho: " + ex.Message, true);
+                ShowMessage("Lỗi cập nhật kho: " + ex.Message, false);
             }
         }
 
-        protected void btnLamMoi_Click(object sender, EventArgs e)
+        protected void btnReset_Click(object sender, EventArgs e)
         {
-            txtTuKhoa.Text = "";
-            ddlMaSP.SelectedIndex = 0;
-            txtSoLuongThucTe.Text = "0";
-            LoadGridData();
-            HienThiThongBao("Đã làm mới dữ liệu.", false);
+            if (txtTimKiem != null) txtTimKiem.Text = "";
+            if (txtTuKhoa != null) txtTuKhoa.Text = "";
+            if (txtSoLuongThucTe != null) txtSoLuongThucTe.Text = "";
+            if (ddlMaSP != null && ddlMaSP.Items.Count > 0) ddlMaSP.SelectedIndex = 0;
+            if (lblThongBao != null) lblThongBao.Visible = false;
+            LoadData();
         }
 
-        private void HienThiThongBao(string msg, bool isError)
+        private void ShowMessage(string message, bool isSuccess)
         {
-            lblThongBao.Text = msg;
-            lblThongBao.Visible = true;
-            lblThongBao.CssClass = isError ? "db-message alert alert-danger d-block" : "db-message alert alert-success d-block";
+            if (lblThongBao != null)
+            {
+                lblThongBao.Text = message;
+                lblThongBao.Visible = true;
+                lblThongBao.CssClass = isSuccess ? "db-message text-success fw-bold mb-3" : "db-message text-danger fw-bold mb-3";
+            }
         }
     }
 }

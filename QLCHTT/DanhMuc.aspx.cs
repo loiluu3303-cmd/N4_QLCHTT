@@ -4,13 +4,19 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Web;
 using System.Web.UI.WebControls;
-using System.Xml.Linq;
 
 namespace QLCHTT_WebForms_Frontend
 {
     public partial class DanhMuc : System.Web.UI.Page
     {
-        // Tự động đọc chuỗi kết nối từ Web.config
+        // Khai báo tường minh các control để tránh triệt để lỗi không tìm thấy trong context
+        protected TextBox txtSearch;
+        protected TextBox txtMaLoai;
+        protected TextBox txtTenLoai;
+        protected TextBox txtMoTa;
+        protected GridView gvData;
+        protected Label lblThongBao;
+
         string connStr = ConfigurationManager.ConnectionStrings["QLCHTTConnectionString"] != null
             ? ConfigurationManager.ConnectionStrings["QLCHTTConnectionString"].ConnectionString
             : @"Data Source=.\SQLEXPRESS;Initial Catalog=QLCHTT;Integrated Security=True";
@@ -29,10 +35,10 @@ namespace QLCHTT_WebForms_Frontend
             {
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
-                    string query = "SELECT * FROM LoaiSanPham";
+                    string query = "SELECT * FROM LoaiSanPham WHERE 1=1";
                     if (!string.IsNullOrEmpty(keyword))
                     {
-                        query += " WHERE MaLoai LIKE @keyword OR TenLoai LIKE @keyword OR MoTa LIKE @keyword";
+                        query += " AND (MaLoai LIKE @keyword OR TenLoai LIKE @keyword)";
                     }
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -47,22 +53,25 @@ namespace QLCHTT_WebForms_Frontend
                             DataTable dt = new DataTable();
                             da.Fill(dt);
 
-                            gvData.DataSource = dt;
-                            gvData.DataBind();
+                            if (gvData != null)
+                            {
+                                gvData.DataSource = dt;
+                                gvData.DataBind();
+                            }
                         }
                     }
                 }
-                lblThongBao.Visible = false;
             }
             catch (Exception ex)
             {
-                ShowMessage("Lỗi kết nối hoặc tải dữ liệu: " + ex.Message, false);
+                ShowMessage("Lỗi tải danh mục: " + ex.Message, false);
             }
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            LoadData(txtSearch.Text.Trim());
+            string keyword = txtSearch != null ? txtSearch.Text.Trim() : "";
+            LoadData(keyword);
         }
 
         protected void btnSave_Click(object sender, EventArgs e)
@@ -73,7 +82,7 @@ namespace QLCHTT_WebForms_Frontend
 
             if (string.IsNullOrEmpty(maLoai) || string.IsNullOrEmpty(tenLoai))
             {
-                ShowMessage("Vui lòng nhập đầy đủ Mã loại và Tên loại sản phẩm!", false);
+                ShowMessage("Vui lòng nhập Mã loại và Tên loại sản phẩm!", false);
                 return;
             }
 
@@ -86,67 +95,43 @@ namespace QLCHTT_WebForms_Frontend
                     using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
                     {
                         checkCmd.Parameters.AddWithValue("@MaLoai", maLoai);
-                        if ((int)checkCmd.ExecuteScalar() > 0)
+                        int count = (int)checkCmd.ExecuteScalar();
+
+                        if (count > 0)
                         {
-                            ShowMessage("Mã loại sản phẩm này đã tồn tại trong hệ thống!", false);
-                            return;
+                            // Cập nhật
+                            string updateQuery = "UPDATE LoaiSanPham SET TenLoai = @TenLoai, MoTa = @MoTa WHERE MaLoai = @MaLoai";
+                            using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
+                            {
+                                cmd.Parameters.AddWithValue("@MaLoai", maLoai);
+                                cmd.Parameters.AddWithValue("@TenLoai", tenLoai);
+                                cmd.Parameters.AddWithValue("@MoTa", string.IsNullOrEmpty(moTa) ? (object)DBNull.Value : moTa);
+                                cmd.ExecuteNonQuery();
+                            }
+                            ShowMessage("Cập nhật danh mục thành công!", true);
+                        }
+                        else
+                        {
+                            // Thêm mới
+                            string insertQuery = "INSERT INTO LoaiSanPham (MaLoai, TenLoai, MoTa) VALUES (@MaLoai, @TenLoai, @MoTa)";
+                            using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
+                            {
+                                cmd.Parameters.AddWithValue("@MaLoai", maLoai);
+                                cmd.Parameters.AddWithValue("@TenLoai", tenLoai);
+                                cmd.Parameters.AddWithValue("@MoTa", string.IsNullOrEmpty(moTa) ? (object)DBNull.Value : moTa);
+                                cmd.ExecuteNonQuery();
+                            }
+                            ShowMessage("Thêm danh mục thành công!", true);
                         }
                     }
-
-                    string insertQuery = "INSERT INTO LoaiSanPham (MaLoai, TenLoai, MoTa) VALUES (@MaLoai, @TenLoai, @MoTa)";
-                    using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@MaLoai", maLoai);
-                        cmd.Parameters.AddWithValue("@TenLoai", tenLoai);
-                        cmd.Parameters.AddWithValue("@MoTa", string.IsNullOrEmpty(moTa) ? (object)DBNull.Value : moTa);
-                        cmd.ExecuteNonQuery();
-                    }
                 }
 
-                ShowMessage("Thêm mới loại sản phẩm thành công!", true);
                 LoadData();
                 ClearForm();
             }
             catch (Exception ex)
             {
-                ShowMessage("Lỗi khi thêm: " + ex.Message, false);
-            }
-        }
-
-        protected void btnUpdate_Click(object sender, EventArgs e)
-        {
-            string maLoai = txtMaLoai.Text.Trim();
-            string tenLoai = txtTenLoai.Text.Trim();
-            string moTa = txtMoTa.Text.Trim();
-
-            if (string.IsNullOrEmpty(maLoai))
-            {
-                ShowMessage("Vui lòng chọn loại sản phẩm cần cập nhật từ bảng phía dưới!", false);
-                return;
-            }
-
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connStr))
-                {
-                    conn.Open();
-                    string updateQuery = "UPDATE LoaiSanPham SET TenLoai = @TenLoai, MoTa = @MoTa WHERE MaLoai = @MaLoai";
-                    using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@MaLoai", maLoai);
-                        cmd.Parameters.AddWithValue("@TenLoai", tenLoai);
-                        cmd.Parameters.AddWithValue("@MoTa", string.IsNullOrEmpty(moTa) ? (object)DBNull.Value : moTa);
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-
-                ShowMessage("Cập nhật thành công!", true);
-                LoadData();
-                ClearForm();
-            }
-            catch (Exception ex)
-            {
-                ShowMessage("Lỗi khi cập nhật: " + ex.Message, false);
+                ShowMessage("Lỗi lưu danh mục: " + ex.Message, false);
             }
         }
 
@@ -155,7 +140,7 @@ namespace QLCHTT_WebForms_Frontend
             string maLoai = txtMaLoai.Text.Trim();
             if (string.IsNullOrEmpty(maLoai))
             {
-                ShowMessage("Vui lòng chọn loại sản phẩm cần xóa từ bảng!", false);
+                ShowMessage("Vui lòng chọn danh mục cần xóa từ bảng!", false);
                 return;
             }
 
@@ -172,35 +157,36 @@ namespace QLCHTT_WebForms_Frontend
                     }
                 }
 
-                ShowMessage("Xóa thành công!", true);
+                ShowMessage("Xóa danh mục thành công!", true);
                 LoadData();
                 ClearForm();
             }
             catch (Exception ex)
             {
-                ShowMessage("Không thể xóa (Loại sản phẩm này đang được sử dụng ở bảng Sản phẩm): " + ex.Message, false);
+                ShowMessage("Không thể xóa (Đang có sản phẩm thuộc danh mục này): " + ex.Message, false);
             }
+        }
+
+        protected void btnReset_Click(object sender, EventArgs e)
+        {
+            ClearForm();
+            if (txtSearch != null) txtSearch.Text = "";
+            LoadData();
+            if (lblThongBao != null) lblThongBao.Visible = false;
         }
 
         protected void gvData_SelectedIndexChanged(object sender, EventArgs e)
         {
-            GridViewRow row = gvData.SelectedRow;
-            txtMaLoai.Text = row.Cells[1].Text.Trim();
-            txtTenLoai.Text = HttpUtility.HtmlDecode(row.Cells[2].Text).Trim();
+            if (gvData != null && gvData.SelectedRow != null)
+            {
+                GridViewRow row = gvData.SelectedRow;
+                txtMaLoai.Text = HttpUtility.HtmlDecode(row.Cells[1].Text).Trim();
+                txtTenLoai.Text = HttpUtility.HtmlDecode(row.Cells[2].Text).Trim();
+                txtMoTa.Text = row.Cells.Count > 3 && HttpUtility.HtmlDecode(row.Cells[3].Text).Trim() != "&nbsp;" ? HttpUtility.HtmlDecode(row.Cells[3].Text).Trim() : "";
 
-            string moTaCell = HttpUtility.HtmlDecode(row.Cells[3].Text).Trim();
-            txtMoTa.Text = (moTaCell == "&nbsp;") ? "" : moTaCell;
-
-            txtMaLoai.ReadOnly = true; // Khóa mã không cho sửa khi đang cập nhật
-            lblThongBao.Visible = false;
-        }
-
-        protected void btnRefresh_Click(object sender, EventArgs e)
-        {
-            ClearForm();
-            txtSearch.Text = "";
-            LoadData();
-            lblThongBao.Visible = false;
+                txtMaLoai.ReadOnly = true;
+                if (lblThongBao != null) lblThongBao.Visible = false;
+            }
         }
 
         private void ClearForm()
@@ -213,9 +199,12 @@ namespace QLCHTT_WebForms_Frontend
 
         private void ShowMessage(string message, bool isSuccess)
         {
-            lblThongBao.Text = message;
-            lblThongBao.Visible = true;
-            lblThongBao.CssClass = isSuccess ? "db-message text-success fw-bold p-2 bg-light border rounded mb-3" : "db-message text-danger fw-bold p-2 bg-light border rounded mb-3";
+            if (lblThongBao != null)
+            {
+                lblThongBao.Text = message;
+                lblThongBao.Visible = true;
+                lblThongBao.CssClass = isSuccess ? "db-message text-success fw-bold mb-3" : "db-message text-danger fw-bold mb-3";
+            }
         }
     }
 }
